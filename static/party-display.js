@@ -8,7 +8,7 @@ class PartyDisplay {
     constructor() {
         this.currentSlide = 0;
         this.slides = [];
-        this.slideInterval = 15000; // 15 seconds
+        this.slideInterval = 7000; // 7 seconds
         this.slideshowTimer = null;
         this.progressTimer = null;
         this.websocket = null;

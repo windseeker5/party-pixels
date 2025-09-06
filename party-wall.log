@@ -5848,3 +5848,118 @@
 2025-09-06 00:19:28,280 - __main__ - INFO - Music search: 'bob dylan'
 2025-09-06 00:19:35,749 - httpx - INFO - HTTP Request: POST https://www.youtube.com/youtubei/v1/search?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8 "HTTP/1.1 200 OK"
 2025-09-06 00:19:35,776 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:19:35] "POST /api/music/search HTTP/1.1" 200 -
+2025-09-06 00:29:23,855 - __main__ - INFO - Client disconnected: nRMFzjX5-b-SKQYdAAAD
+2025-09-06 00:29:23,856 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "GET /socket.io/?EIO=4&transport=websocket&sid=cxCtZSeDitH-xbTAAAAC HTTP/1.1" 200 -
+2025-09-06 00:29:23,857 - __main__ - INFO - Client disconnected: Jh1Y-3r8Jawp5r8rAAAB
+2025-09-06 00:29:23,858 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "GET /socket.io/?EIO=4&transport=websocket&sid=67XY9Y9J4nPbT45CAAAA HTTP/1.1" 200 -
+2025-09-06 00:29:23,865 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "GET / HTTP/1.1" 200 -
+2025-09-06 00:29:23,905 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "GET /styles.css HTTP/1.1" 200 -
+2025-09-06 00:29:23,908 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "[36mGET /party-display.js HTTP/1.1[0m" 304 -
+2025-09-06 00:29:23,932 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "GET /api/media HTTP/1.1" 200 -
+2025-09-06 00:29:23,951 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "GET /socket.io/?EIO=4&transport=polling&t=PaTIK1g HTTP/1.1" 200 -
+2025-09-06 00:29:23,957 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "GET /api/music/queue HTTP/1.1" 200 -
+2025-09-06 00:29:23,965 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "[36mGET /media/photos/20250905_232816_P1001764.JPG HTTP/1.1[0m" 304 -
+2025-09-06 00:29:23,967 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "[36mGET /media/photos/20250905_231124_20241128_184439.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:29:23,971 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "[36mGET /media/photos/20250905_212319_PXL_20250514_221657656.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:29:23,975 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "[36mGET /media/photos/20250905_201058_20240713_193147.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:29:23,977 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "[36mGET /media/photos/20250905_205701_kenBO2024.png HTTP/1.1[0m" 304 -
+2025-09-06 00:29:23,978 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "[36mGET /media/photos/20250905_204514_PXL_20250514_221709646.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:29:23,978 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "[36mGET /media/photos/20250905_193454_20240816_180315.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:29:23,979 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "[36mGET /media/photos/20250905_205332_PXL_20250625_020546051.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:29:23,981 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "[36mGET /media/photos/20250905_193132_PXL_20250614_161144250.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:29:23,983 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "[36mGET /media/photos/20250905_192411_PXL_20250628_155916155.MP.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:29:23,987 - __main__ - INFO - Client connected: bYK_5iKVf5lqyQzEAAAH
+2025-09-06 00:29:23,989 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "POST /socket.io/?EIO=4&transport=polling&t=PaTIK1r&sid=JYptUIXkqccF-O1LAAAG HTTP/1.1" 200 -
+2025-09-06 00:29:23,990 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "GET /socket.io/?EIO=4&transport=polling&t=PaTIK1s&sid=JYptUIXkqccF-O1LAAAG HTTP/1.1" 200 -
+2025-09-06 00:29:23,991 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:23] "GET /api/network HTTP/1.1" 200 -
+2025-09-06 00:29:24,052 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:29:24] "GET /socket.io/?EIO=4&transport=polling&t=PaTIK2s&sid=JYptUIXkqccF-O1LAAAG HTTP/1.1" 200 -
+2025-09-06 00:32:14,282 - __main__ - INFO - Music search: 'milky chance'
+2025-09-06 00:32:24,339 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:32:24] "POST /api/music/search HTTP/1.1" 200 -
+2025-09-06 00:32:25,339 - __main__ - INFO - Client disconnected: oDbpo1oJEqDUoXMpAAAF
+2025-09-06 00:32:25,340 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:32:25] "GET /socket.io/?EIO=4&transport=websocket&sid=1IpJuhOcNlCoOD_PAAAE HTTP/1.1" 200 -
+2025-09-06 00:32:25,421 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:32:25] "GET /upload HTTP/1.1" 200 -
+2025-09-06 00:32:25,484 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:32:25] "[36mGET /styles.css HTTP/1.1[0m" 304 -
+2025-09-06 00:32:25,489 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:32:25] "[36mGET /party-upload.js HTTP/1.1[0m" 304 -
+2025-09-06 00:32:25,537 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:32:25] "GET /api/config HTTP/1.1" 200 -
+2025-09-06 00:32:25,550 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:32:25] "GET /socket.io/?EIO=4&transport=polling&t=PaTJ0NA HTTP/1.1" 200 -
+2025-09-06 00:32:25,557 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:32:25] "GET /api/ollama/models HTTP/1.1" 200 -
+2025-09-06 00:32:25,569 - __main__ - INFO - Client connected: zvmAkqpu3ilavHfFAAAJ
+2025-09-06 00:32:25,570 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:32:25] "POST /socket.io/?EIO=4&transport=polling&t=PaTJ0NI&sid=BpZi-lWaMCTA-cbGAAAI HTTP/1.1" 200 -
+2025-09-06 00:32:25,570 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:32:25] "GET /socket.io/?EIO=4&transport=polling&t=PaTJ0NJ&sid=BpZi-lWaMCTA-cbGAAAI HTTP/1.1" 200 -
+2025-09-06 00:32:25,632 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:32:25] "GET /socket.io/?EIO=4&transport=polling&t=PaTJ0O0&sid=BpZi-lWaMCTA-cbGAAAI HTTP/1.1" 200 -
+2025-09-06 00:32:25,665 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:32:25] "GET /socket.io/?EIO=4&transport=polling&t=PaTJ0Oa&sid=BpZi-lWaMCTA-cbGAAAI HTTP/1.1" 200 -
+2025-09-06 00:42:40,749 - __main__ - INFO - Client disconnected: zvmAkqpu3ilavHfFAAAJ
+2025-09-06 00:42:40,749 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:42:40] "GET /socket.io/?EIO=4&transport=websocket&sid=BpZi-lWaMCTA-cbGAAAI HTTP/1.1" 200 -
+2025-09-06 00:42:40,798 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:42:40] "GET /upload HTTP/1.1" 200 -
+2025-09-06 00:42:40,842 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:42:40] "[36mGET /styles.css HTTP/1.1[0m" 304 -
+2025-09-06 00:42:40,845 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:42:40] "GET /party-upload.js HTTP/1.1" 200 -
+2025-09-06 00:42:40,887 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:42:40] "GET /api/config HTTP/1.1" 200 -
+2025-09-06 00:42:40,903 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:42:40] "GET /socket.io/?EIO=4&transport=polling&t=PaTLMby HTTP/1.1" 200 -
+2025-09-06 00:42:40,914 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:42:40] "GET /api/ollama/models HTTP/1.1" 200 -
+2025-09-06 00:42:40,922 - __main__ - INFO - Client connected: O4YJBk4g10DQw9fzAAAL
+2025-09-06 00:42:40,925 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:42:40] "POST /socket.io/?EIO=4&transport=polling&t=PaTLMcJ&sid=-4SberIhsBS_OT2pAAAK HTTP/1.1" 200 -
+2025-09-06 00:42:40,925 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:42:40] "GET /socket.io/?EIO=4&transport=polling&t=PaTLMcL&sid=-4SberIhsBS_OT2pAAAK HTTP/1.1" 200 -
+2025-09-06 00:42:41,002 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:42:41] "GET /socket.io/?EIO=4&transport=polling&t=PaTLMcj&sid=-4SberIhsBS_OT2pAAAK HTTP/1.1" 200 -
+2025-09-06 00:42:41,095 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:42:41] "GET /socket.io/?EIO=4&transport=polling&t=PaTLMdr&sid=-4SberIhsBS_OT2pAAAK HTTP/1.1" 200 -
+2025-09-06 00:42:53,159 - __main__ - ERROR - Upload error: [Errno 2] No such file or directory: 'media/musics/20250906_004253_DavidCreationTC2025.mp3'
+2025-09-06 00:42:53,160 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:42:53] "[35m[1mPOST /api/upload HTTP/1.1[0m" 500 -
+2025-09-06 00:48:17,940 - __main__ - INFO - Client disconnected: bYK_5iKVf5lqyQzEAAAH
+2025-09-06 00:48:17,940 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:17] "GET /socket.io/?EIO=4&transport=websocket&sid=JYptUIXkqccF-O1LAAAG HTTP/1.1" 200 -
+2025-09-06 00:48:17,952 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:17] "GET / HTTP/1.1" 200 -
+2025-09-06 00:48:17,978 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:17] "GET /styles.css HTTP/1.1" 200 -
+2025-09-06 00:48:17,981 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:17] "GET /party-display.js HTTP/1.1" 200 -
+2025-09-06 00:48:18,010 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:18] "GET /api/media HTTP/1.1" 200 -
+2025-09-06 00:48:18,025 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:18] "GET /socket.io/?EIO=4&transport=polling&t=PaTMevY HTTP/1.1" 200 -
+2025-09-06 00:48:18,026 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:18] "GET /api/music/queue HTTP/1.1" 200 -
+2025-09-06 00:48:18,032 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:18] "[36mGET /media/photos/20250905_232816_P1001764.JPG HTTP/1.1[0m" 304 -
+2025-09-06 00:48:18,036 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:18] "[36mGET /media/photos/20250905_231124_20241128_184439.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:48:18,038 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:18] "[36mGET /media/photos/20250905_212319_PXL_20250514_221657656.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:48:18,043 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:18] "[36mGET /media/photos/20250905_205332_PXL_20250625_020546051.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:48:18,044 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:18] "[36mGET /media/photos/20250905_205701_kenBO2024.png HTTP/1.1[0m" 304 -
+2025-09-06 00:48:18,045 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:18] "GET /api/network HTTP/1.1" 200 -
+2025-09-06 00:48:18,053 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:18] "[36mGET /media/photos/20250905_193454_20240816_180315.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:48:18,054 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:18] "[36mGET /media/photos/20250905_201058_20240713_193147.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:48:18,054 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:18] "[36mGET /media/photos/20250905_204514_PXL_20250514_221709646.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:48:18,056 - __main__ - INFO - Client connected: wG7D_-BwMcWTAmZeAAAN
+2025-09-06 00:48:18,059 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:18] "POST /socket.io/?EIO=4&transport=polling&t=PaTMevq&sid=hj_l7DxWdc-MsyNFAAAM HTTP/1.1" 200 -
+2025-09-06 00:48:18,059 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:18] "GET /socket.io/?EIO=4&transport=polling&t=PaTMevr&sid=hj_l7DxWdc-MsyNFAAAM HTTP/1.1" 200 -
+2025-09-06 00:48:18,066 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:18] "[36mGET /media/photos/20250905_193132_PXL_20250614_161144250.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:48:18,080 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:18] "[36mGET /media/photos/20250905_192411_PXL_20250628_155916155.MP.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:48:18,099 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:18] "GET /socket.io/?EIO=4&transport=polling&t=PaTMewK&sid=hj_l7DxWdc-MsyNFAAAM HTTP/1.1" 200 -
+2025-09-06 00:48:18,121 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:48:18] "GET /socket.io/?EIO=4&transport=polling&t=PaTMex7&sid=hj_l7DxWdc-MsyNFAAAM HTTP/1.1" 200 -
+2025-09-06 00:49:13,044 - __main__ - INFO - Client disconnected: wG7D_-BwMcWTAmZeAAAN
+2025-09-06 00:49:13,044 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "GET /socket.io/?EIO=4&transport=websocket&sid=hj_l7DxWdc-MsyNFAAAM HTTP/1.1" 200 -
+2025-09-06 00:49:13,048 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "GET / HTTP/1.1" 200 -
+2025-09-06 00:49:13,077 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "[36mGET /styles.css HTTP/1.1[0m" 304 -
+2025-09-06 00:49:13,080 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "[36mGET /party-display.js HTTP/1.1[0m" 304 -
+2025-09-06 00:49:13,101 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "GET /api/media HTTP/1.1" 200 -
+2025-09-06 00:49:13,110 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "GET /socket.io/?EIO=4&transport=polling&t=PaTMsMJ HTTP/1.1" 200 -
+2025-09-06 00:49:13,127 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "[36mGET /media/photos/20250905_232816_P1001764.JPG HTTP/1.1[0m" 304 -
+2025-09-06 00:49:13,128 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "[36mGET /media/photos/20250905_231124_20241128_184439.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:49:13,130 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "GET /api/music/queue HTTP/1.1" 200 -
+2025-09-06 00:49:13,131 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "[36mGET /media/photos/20250905_212319_PXL_20250514_221657656.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:49:13,131 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "[36mGET /media/photos/20250905_205701_kenBO2024.png HTTP/1.1[0m" 304 -
+2025-09-06 00:49:13,132 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "[36mGET /media/photos/20250905_205332_PXL_20250625_020546051.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:49:13,133 - __main__ - INFO - Client connected: 3osG5r42dsLyeFCaAAAP
+2025-09-06 00:49:13,139 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "GET /api/network HTTP/1.1" 200 -
+2025-09-06 00:49:13,139 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "POST /socket.io/?EIO=4&transport=polling&t=PaTMsMW&sid=kT1LuOwzRVollRDZAAAO HTTP/1.1" 200 -
+2025-09-06 00:49:13,139 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "GET /socket.io/?EIO=4&transport=polling&t=PaTMsMX&sid=kT1LuOwzRVollRDZAAAO HTTP/1.1" 200 -
+2025-09-06 00:49:13,140 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "[36mGET /media/photos/20250905_204514_PXL_20250514_221709646.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:49:13,142 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "[36mGET /media/photos/20250905_201058_20240713_193147.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:49:13,146 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "[36mGET /media/photos/20250905_193454_20240816_180315.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:49:13,149 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "[36mGET /media/photos/20250905_193132_PXL_20250614_161144250.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:49:13,152 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "[36mGET /media/photos/20250905_192411_PXL_20250628_155916155.MP.jpg HTTP/1.1[0m" 304 -
+2025-09-06 00:49:13,175 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:49:13] "GET /socket.io/?EIO=4&transport=polling&t=PaTMsN3&sid=kT1LuOwzRVollRDZAAAO HTTP/1.1" 200 -
+2025-09-06 00:50:16,367 - __main__ - INFO - Client disconnected: O4YJBk4g10DQw9fzAAAL
+2025-09-06 00:50:16,369 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:50:16] "GET /socket.io/?EIO=4&transport=websocket&sid=-4SberIhsBS_OT2pAAAK HTTP/1.1" 200 -
+2025-09-06 00:50:16,414 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:50:16] "GET /upload HTTP/1.1" 200 -
+2025-09-06 00:50:16,496 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:50:16] "[36mGET /styles.css HTTP/1.1[0m" 304 -
+2025-09-06 00:50:16,506 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:50:16] "[36mGET /party-upload.js HTTP/1.1[0m" 304 -
+2025-09-06 00:50:16,556 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:50:16] "GET /api/config HTTP/1.1" 200 -
+2025-09-06 00:50:16,599 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:50:16] "GET /socket.io/?EIO=4&transport=polling&t=PaTN5ru HTTP/1.1" 200 -
+2025-09-06 00:50:16,604 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:50:16] "GET /api/ollama/models HTTP/1.1" 200 -
+2025-09-06 00:50:16,671 - __main__ - INFO - Client connected: azGekgrIgK2oCQqRAAAR
+2025-09-06 00:50:16,672 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:50:16] "POST /socket.io/?EIO=4&transport=polling&t=PaTN5sx&sid=dRdqonLv8TjOVNu7AAAQ HTTP/1.1" 200 -
+2025-09-06 00:50:16,673 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:50:16] "GET /socket.io/?EIO=4&transport=polling&t=PaTN5s-&sid=dRdqonLv8TjOVNu7AAAQ HTTP/1.1" 200 -
+2025-09-06 00:50:16,751 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:50:16] "GET /socket.io/?EIO=4&transport=polling&t=PaTN5u6&sid=dRdqonLv8TjOVNu7AAAQ HTTP/1.1" 200 -
+2025-09-06 00:50:16,777 - werkzeug - INFO - 127.0.0.1 - - [06/Sep/2025 00:50:16] "GET /socket.io/?EIO=4&transport=polling&t=PaTN5us&sid=dRdqonLv8TjOVNu7AAAQ HTTP/1.1" 200 -

@@ -417,12 +417,8 @@ class PartyUpload {
             
             // Add metadata
             const guestName = document.getElementById('guestName').value.trim();
-            const songTitle = document.getElementById('songTitle').value.trim();
-            const artist = document.getElementById('artist').value.trim();
             
             if (guestName) formData.append('guest_name', guestName);
-            if (songTitle) formData.append('song_title', songTitle);
-            if (artist) formData.append('artist', artist);
             
             // Auto-detect file type (server will handle this)
             formData.append('type', 'auto');
