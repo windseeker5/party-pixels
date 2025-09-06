@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  party-flask:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: party-memory-wall
+    ports:
+      - "6000:6000"  # Critical: Port 6000 for testing compatibility
+    volumes:
+      - ./media:/app/media
+      - ./database:/app/database
+      - ./frontend:/app/frontend
+    environment:
+      - FLASK_ENV=production
+      - PARTY_TITLE=Happy 50th Birthday Valérie!
+      - MAX_FILE_SIZE=524288000  # 500MB
+    networks:
+      - party-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - party-nginx
+
+  party-nginx:
+    image: nginx:alpine
+    container_name: party-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/party.conf:/etc/nginx/conf.d/default.conf
+      - ./media:/usr/share/nginx/html/media:ro
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    networks:
+      - party-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  party-network:
+    driver: bridge
+    
+volumes:
+  party-media:
+    driver: local
+  party-database:
+    driver: local

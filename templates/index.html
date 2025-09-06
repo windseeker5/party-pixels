@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Valérie's 50th Birthday Party Wall</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes:wght@400&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- PERMANENT CELEBRATION TITLE -->
+    <div class="celebration-header">
+        <h1 class="celebration-title">
+            <span class="sparkle">🎉</span>
+            Happy 50th Birthday Valérie!
+            <span class="sparkle">💖</span>
+        </h1>
+    </div>
+
+    <!-- SLIDESHOW CONTAINER -->
+    <div class="slideshow-container" id="slideshow">
+        <!-- Photos/videos inserted dynamically -->
+        <div class="slide active" id="welcomeSlide">
+            <div class="welcome-content">
+                <h2>Welcome to the Party!</h2>
+                <p>Upload your photos and videos to share memories</p>
+                <div class="upload-prompt">
+                    <span>📱 Scan the QR code to share</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MUSIC OVERLAY -->
+    <div class="music-overlay" id="musicOverlay">
+        <div class="now-playing">
+            <h3 id="songTitle">No music playing</h3>
+            <p id="artistName">Select a song to play</p>
+            <div class="music-controls">
+                <button id="prevBtn" title="Previous">⏮</button>
+                <button id="playPauseBtn" title="Play/Pause">⏸</button>
+                <button id="nextBtn" title="Next">⏭</button>
+                <button id="volumeBtn" title="Volume">🔊</button>
+            </div>
+            <div class="volume-slider" id="volumeSlider" style="display: none;">
+                <input type="range" id="volumeRange" min="0" max="100" value="70">
+            </div>
+        </div>
+    </div>
+
+    <!-- QR CODE OVERLAY -->
+    <div class="qr-overlay">
+        <div class="qr-content">
+            <img id="qrCode" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgZmlsbD0iIzAwMCIvPjx0ZXh0IHg9Ijc1IiB5PSI3NSIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkxvYWRpbmcuLi48L3RleHQ+PC9zdmc+" alt="Share QR">
+            <p>Share Now!</p>
+            <p>party.local/upload</p>
+        </div>
+    </div>
+
+    <!-- PHOTO QUEUE (LEFT BORDER) -->
+    <div class="photo-queue" id="photoQueue">
+        <!-- Photo queue items will be inserted dynamically -->
+    </div>
+
+    <!-- MUSIC QUEUE (RIGHT BORDER) -->
+    <div class="music-queue" id="musicQueue">
+        <!-- Music queue items will be inserted dynamically -->
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+        <div class="progress-text" id="progressText">15 seconds</div>
+    </div>
+
+    <!-- PREVIEW THUMBNAILS -->
+    <div class="preview-container" id="previewContainer">
+        <!-- Next 5 photos preview -->
+    </div>
+
+    <!-- AUDIO ELEMENT FOR MUSIC PLAYBACK -->
+    <audio id="audioPlayer" preload="none"></audio>
+
+    <!-- CONNECTION STATUS -->
+    <div class="connection-status" id="connectionStatus">
+        <span class="status-dot"></span>
+        <span class="status-text">Connecting...</span>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <script src="party-display.js"></script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Share at Valérie's Party</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <meta name="theme-color" content="#FFD700">
+    <meta name="mobile-web-app-capable" content="yes">
+</head>
+<body class="upload-page">
+    <!-- CELEBRATION TITLE (smaller for mobile) -->
+    <div class="celebration-header mobile">
+        <h1 class="celebration-title mobile">
+            ✨ Happy 50th Birthday Valérie! ✨
+        </h1>
+    </div>
+
+    <div class="upload-container">
+        <!-- UPLOAD AREA -->
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-prompt" id="uploadPrompt">
+                <div class="upload-icon">📸</div>
+                <h2>Drop photos or videos here!</h2>
+                <p>Or tap to select files</p>
+                <div class="file-types">
+                    <span class="file-type">📷 Photos</span>
+                    <span class="file-type">🎥 Videos</span>
+                    <span class="file-type">🎵 Music</span>
+                </div>
+                <input type="file" id="fileInput" accept="image/*,video/*,audio/*" multiple capture="environment">
+            </div>
+            
+            <!-- UPLOAD PROGRESS -->
+            <div class="upload-progress" id="uploadProgress" style="display: none;">
+                <div class="progress-spinner"></div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p id="progressText">Preparing upload...</p>
+                <div class="upload-details" id="uploadDetails"></div>
+            </div>
+
+            <!-- FILE PREVIEWS -->
+            <div class="file-previews" id="filePreviews" style="display: none;">
+                <!-- Selected files preview will appear here -->
+            </div>
+        </div>
+
+        <!-- GUEST INFO FORM -->
+        <form id="uploadForm" class="upload-form">
+            <div class="form-group">
+                <label for="guestName">
+                    <span class="label-icon">👤</span>
+                    Your name (optional):
+                </label>
+                <input type="text" id="guestName" name="guestName" placeholder="Enter your name" maxlength="50">
+                <div class="input-hint">Help us attribute your memories!</div>
+            </div>
+
+            <div class="form-group">
+                <label for="songTitle">
+                    <span class="label-icon">🎵</span>
+                    Song title (for music files):
+                </label>
+                <input type="text" id="songTitle" name="songTitle" placeholder="Song name" maxlength="100">
+            </div>
+
+            <div class="form-group">
+                <label for="artist">
+                    <span class="label-icon">🎤</span>
+                    Artist name (for music files):
+                </label>
+                <input type="text" id="artist" name="artist" placeholder="Artist or band name" maxlength="100">
+            </div>
+
+            <!-- MUSIC SEARCH SECTION -->
+            <div class="music-search-section" id="musicSearchSection">
+                <div class="section-divider">
+                    <span class="divider-text">🎵 Or Search for Music 🎵</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="musicSearch">
+                        <span class="label-icon">🔍</span>
+                        Search for songs, artists, or describe a vibe:
+                    </label>
+                    <div class="search-container">
+                        <input type="text" id="musicSearch" placeholder="Search for music..." maxlength="100">
+                        <button type="button" id="searchButton" class="search-btn">Search</button>
+                    </div>
+                    <div class="search-hint">Try: "upbeat party music", "Taylor Swift", or "classic rock"</div>
+                </div>
+
+                <!-- SEARCH RESULTS -->
+                <div class="search-results" id="searchResults" style="display: none;">
+                    <div class="results-header">
+                        <h3>🎵 Search Results</h3>
+                        <span class="results-count" id="resultsCount"></span>
+                    </div>
+                    
+                    <!-- Local Results -->
+                    <div class="local-results" id="localResults">
+                        <div class="results-category">
+                            <h4>📀 From Party Collection</h4>
+                            <div class="results-list" id="localResultsList"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- YouTube Results -->
+                    <div class="youtube-results" id="youtubeResults">
+                        <div class="results-category">
+                            <h4>🌐 From YouTube</h4>
+                            <div class="results-list" id="youtubeResultsList"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEARCH LOADING -->
+                <div class="search-loading" id="searchLoading" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <p>Searching for music...</p>
+                </div>
+            </div>
+
+            <button type="submit" class="share-button" id="shareButton" disabled>
+                <span class="button-icon">🎉</span>
+                <span class="button-text">Select files first</span>
+            </button>
+        </form>
+
+        <!-- SUCCESS MESSAGE -->
+        <div class="success-message" id="successMessage" style="display: none;">
+            <div class="success-animation">
+                <div class="success-icon">✅</div>
+                <div class="celebration-emojis">
+                    <span>🎉</span>
+                    <span>🎊</span>
+                    <span>✨</span>
+                    <span>🎈</span>
+                </div>
+            </div>
+            <h3>Shared Successfully!</h3>
+            <p id="successDetails">Your memory will appear on the big screen soon!</p>
+            <div class="success-actions">
+                <button onclick="resetForm()" class="reset-button">Share Another</button>
+                <button onclick="viewSlideshow()" class="view-button">View Slideshow</button>
+            </div>
+        </div>
+
+        <!-- ERROR MESSAGE -->
+        <div class="error-message" id="errorMessage" style="display: none;">
+            <div class="error-icon">❌</div>
+            <h3>Upload Failed</h3>
+            <p id="errorDetails">Please try again.</p>
+            <button onclick="hideError()" class="retry-button">Try Again</button>
+        </div>
+    </div>
+
+    <!-- CONNECTION STATUS -->
+    <div class="connection-status mobile" id="connectionStatus">
+        <span class="status-dot"></span>
+        <span class="status-text">Connecting...</span>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="upload-footer">
+        <p>💝 Made with love for Valérie's 50th Birthday</p>
+    </footer>
+
+    <script src="party-upload.js"></script>
+</body>
+</html>

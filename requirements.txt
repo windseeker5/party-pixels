@@ -1,0 +1,12 @@
+Flask==3.0.0
+Flask-CORS==4.0.0
+Flask-SocketIO==5.3.6
+python-socketio==5.10.0
+Pillow>=10.4.0
+mutagen==1.47.0
+werkzeug>=3.0.0
+python-dotenv==1.0.0
+requests>=2.31.0
+youtube-search-python==1.6.6
+yt-dlp>=2023.7.6
+fuzzywuzzy[speedup]==0.18.0
