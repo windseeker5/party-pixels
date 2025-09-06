@@ -318,7 +318,50 @@ class PartyDisplay {
                 });
             }
             
+            // Show birthday note if available
+            this.showBirthdayNote(targetSlide);
+            
             this.updatePhotoQueue();
+        }
+    }
+
+    showBirthdayNote(slideElement) {
+        const birthdayNoteOverlay = document.getElementById('birthdayNoteOverlay');
+        const birthdayNoteText = document.getElementById('birthdayNoteText');
+        
+        if (!birthdayNoteOverlay || !birthdayNoteText) return;
+        
+        // Get birthday note from slide data
+        const uploadId = slideElement.getAttribute('data-upload-id');
+        if (!uploadId || slideElement.id === 'welcomeSlide') {
+            birthdayNoteOverlay.style.display = 'none';
+            return;
+        }
+        
+        // Find the slide data
+        const slideData = this.slides.find(slide => slide.upload_id == uploadId);
+        const birthdayNote = slideData?.birthday_note;
+        
+        if (birthdayNote && birthdayNote.trim()) {
+            birthdayNoteText.textContent = birthdayNote;
+            birthdayNoteOverlay.style.display = 'block';
+            birthdayNoteOverlay.style.opacity = '0';
+            
+            // Fade in after 2 seconds
+            setTimeout(() => {
+                birthdayNoteOverlay.style.transition = 'opacity 0.5s ease-in-out';
+                birthdayNoteOverlay.style.opacity = '1';
+                
+                // Fade out after 5 seconds
+                setTimeout(() => {
+                    birthdayNoteOverlay.style.opacity = '0';
+                    setTimeout(() => {
+                        birthdayNoteOverlay.style.display = 'none';
+                    }, 500);
+                }, 5000);
+            }, 2000);
+        } else {
+            birthdayNoteOverlay.style.display = 'none';
         }
     }
 

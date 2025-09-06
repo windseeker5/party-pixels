@@ -208,6 +208,7 @@ def upload_files():
         
         # Get guest information
         guest_name = request.form.get('guest_name', 'Anonymous')
+        birthday_note = request.form.get('birthday_note', '')
         file_type = request.form.get('type', 'auto')  # auto-detect if not specified
         song_title = request.form.get('song_title', '')
         artist = request.form.get('artist', 'Unknown Artist')
@@ -245,7 +246,10 @@ def upload_files():
                 unique_filename = f"{timestamp}_{filename}"
                 
                 # Determine save path
-                media_folder = f"media/{detected_type}s"
+                if detected_type == 'music':
+                    media_folder = f"media/{detected_type}"  # music stays singular
+                else:
+                    media_folder = f"media/{detected_type}s"  # photos/videos become plural
                 file_path = os.path.join(media_folder, unique_filename)
                 
                 # Save file
@@ -262,7 +266,8 @@ def upload_files():
                     file_path=file_path,
                     file_type=detected_type,
                     original_filename=file.filename,
-                    file_size=file_size
+                    file_size=file_size,
+                    birthday_note=birthday_note
                 )
                 
                 # Mark as processed
@@ -302,6 +307,7 @@ def upload_files():
                     'guest_name': guest_name,
                     'file_type': detected_type,
                     'filename': unique_filename,
+                    'birthday_note': birthday_note,
                     'timestamp': datetime.now().isoformat()
                 })
                 
@@ -410,6 +416,170 @@ def get_statistics():
     except Exception as e:
         logger.error(f"Error getting statistics: {e}")
         return jsonify({'error': 'Failed to get statistics'}), 500
+
+@app.route('/report')
+def birthday_report():
+    """Generate simple HTML report for Valérie's party memories"""
+    try:
+        # Get all uploads with notes
+        conn = db.get_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+        SELECT guest_name, file_path, file_type, original_filename, 
+               birthday_note, timestamp
+        FROM uploads
+        WHERE processed = TRUE
+        ORDER BY timestamp ASC
+        ''')
+        
+        uploads = cursor.fetchall()
+        conn.close()
+        
+        # Get music uploads separately
+        music_uploads = [upload for upload in uploads if upload['file_type'] == 'music']
+        media_uploads = [upload for upload in uploads if upload['file_type'] in ('photo', 'video')]
+        
+        # Generate HTML report
+        html = f'''<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Valérie's 50th Birthday Memory Book</title>
+    <style>
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #FFD700 0%, #FF69B4 100%);
+            min-height: 100vh;
+        }}
+        .container {{
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }}
+        h1 {{
+            text-align: center;
+            color: #FF1493;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }}
+        .subtitle {{
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }}
+        .memory-item {{
+            margin: 30px 0;
+            padding: 20px;
+            border-left: 4px solid #FFD700;
+            background: #f9f9f9;
+            border-radius: 0 10px 10px 0;
+        }}
+        .contributor {{
+            font-weight: bold;
+            color: #FF1493;
+            font-size: 1.1em;
+        }}
+        .filename {{
+            color: #666;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }}
+        .birthday-note {{
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 3px solid #FF69B4;
+            font-style: italic;
+        }}
+        .music-section {{
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #FFD700;
+        }}
+        .stats {{
+            text-align: center;
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }}
+        .emoji {{
+            font-size: 1.5em;
+            margin: 0 5px;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 Valérie's 50th Birthday Memory Book 🎂</h1>
+        <p class="subtitle">A collection of memories from your special celebration</p>
+        
+        <div class="stats">
+            <p><span class="emoji">📸</span> <strong>{len(media_uploads)}</strong> photos & videos shared</p>
+            <p><span class="emoji">🎵</span> <strong>{len(music_uploads)}</strong> songs added to the party</p>
+            <p><span class="emoji">👥</span> <strong>{len(set(upload['guest_name'] for upload in uploads if upload['guest_name']))}</strong> wonderful contributors</p>
+        </div>
+        
+        <h2>💖 Memories & Messages</h2>'''
+        
+        for upload in media_uploads:
+            guest_name = upload['guest_name'] or 'Anonymous'
+            birthday_note = upload['birthday_note']
+            filename = upload['original_filename'] or 'Unknown file'
+            timestamp = upload['timestamp']
+            
+            html += f'''
+        <div class="memory-item">
+            <div class="contributor">💝 From {guest_name}</div>
+            <div class="filename">📁 {filename}</div>'''
+            
+            if birthday_note and birthday_note.strip():
+                html += f'''
+            <div class="birthday-note">"{birthday_note}"</div>'''
+            
+            html += f'''
+            <div style="color: #999; font-size: 0.8em;">⏰ {timestamp}</div>
+        </div>'''
+        
+        if music_uploads:
+            html += '''
+        <div class="music-section">
+            <h2>🎵 Party Soundtrack</h2>'''
+            
+            for upload in music_uploads:
+                guest_name = upload['guest_name'] or 'Anonymous'
+                filename = upload['original_filename'] or 'Unknown song'
+                
+                html += f'''
+            <div class="memory-item">
+                <div class="contributor">🎼 Added by {guest_name}</div>
+                <div class="filename">🎵 {filename}</div>
+            </div>'''
+            
+            html += '</div>'
+        
+        html += '''
+        <div style="text-align: center; margin-top: 40px; color: #666;">
+            <p>💕 Generated with love for Valérie's 50th Birthday celebration</p>
+            <p style="font-size: 0.9em;">🎂 What a wonderful party it was! 🎉</p>
+        </div>
+    </div>
+</body>
+</html>'''
+        
+        return html
+        
+    except Exception as e:
+        logger.error(f"Error generating report: {e}")
+        return f"<h1>Error generating report</h1><p>{str(e)}</p>", 500
 
 # Media serving routes
 @app.route('/media/<path:filename>')

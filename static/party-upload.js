@@ -59,8 +59,7 @@ class PartyUpload {
             // Setup music search functionality
             this.setupMusicSearch();
             
-            // Setup model selection functionality
-            this.setupModelSelection();
+            // Model selection removed per user request
             
             console.log('✅ Party Upload Interface initialized successfully');
             
@@ -86,44 +85,49 @@ class PartyUpload {
     setupEventListeners() {
         console.log('🎧 Setting up event listeners...');
         
-        // Drag and drop events
-        this.uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.uploadArea.classList.add('drag-over');
-        });
+        // Setup unified upload area
+        this.setupUploadArea();
         
-        this.uploadArea.addEventListener('dragleave', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.uploadArea.classList.remove('drag-over');
-        });
-        
-        this.uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.uploadArea.classList.remove('drag-over');
+        // Drag and drop events on upload area
+        const uploadArea = document.querySelector('.upload-area');
+        if (uploadArea) {
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadArea.classList.add('drag-over');
+            });
             
-            const files = Array.from(e.dataTransfer.files);
-            console.log(`📎 Files dropped: ${files.length}`);
-            this.handleFiles(files);
-        });
-        
-        // Click to select files
-        this.uploadArea.addEventListener('click', (e) => {
-            if (this.isUploading) return;
+            uploadArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadArea.classList.remove('drag-over');
+            });
             
-            // Only trigger file input if clicking the upload area itself, not child elements
-            if (e.target === this.uploadArea || e.target.closest('.upload-prompt')) {
-                this.fileInput.click();
-            }
-        });
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadArea.classList.remove('drag-over');
+                
+                const files = Array.from(e.dataTransfer.files);
+                console.log(`📎 Files dropped: ${files.length}`);
+                this.handleFiles(files);
+            });
+            
+            // Click to upload
+            uploadArea.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (!this.isUploading) {
+                    this.fileInput.click();
+                }
+            });
+        }
         
         // File input change
         this.fileInput.addEventListener('change', (e) => {
             const files = Array.from(e.target.files);
             console.log(`📎 Files selected: ${files.length}`);
             this.handleFiles(files);
+            
         });
         
         // Form submission
@@ -417,8 +421,10 @@ class PartyUpload {
             
             // Add metadata
             const guestName = document.getElementById('guestName').value.trim();
+            const birthdayNote = document.getElementById('birthdayNote').value.trim();
             
             if (guestName) formData.append('guest_name', guestName);
+            if (birthdayNote) formData.append('birthday_note', birthdayNote);
             
             // Auto-detect file type (server will handle this)
             formData.append('type', 'auto');
@@ -669,6 +675,18 @@ class PartyUpload {
         
         if (statusDot) {
             statusDot.className = `status-dot ${status}`;
+            // Force correct colors based on actual connection state
+            switch(status) {
+                case 'connected':
+                    statusDot.style.backgroundColor = '#00ff00';
+                    break;
+                case 'connecting':
+                    statusDot.style.backgroundColor = '#ffaa00';
+                    break;
+                case 'disconnected':
+                    statusDot.style.backgroundColor = '#ff0000';
+                    break;
+            }
         }
         
         if (statusText) {
@@ -1008,142 +1026,66 @@ class PartyUpload {
     }
 
     // ============================================================================
-    // MODEL SELECTION FUNCTIONALITY
+    // MODERN CARD-BASED UPLOAD INTERFACE
     // ============================================================================
 
-    setupModelSelection() {
-        console.log('🤖 Setting up model selection functionality');
+    setupUploadArea() {
+        console.log('🎨 Setting up unified upload area...');
         
-        this.modelSelectionSection = document.getElementById('modelSelectionSection');
-        this.modelSelect = document.getElementById('modelSelect');
-        this.modelInfo = document.getElementById('modelInfo');
+        // Reset file input to accept all types
+        this.fileInput.accept = 'image/*,video/*,audio/*';
         
-        if (!this.modelSelect || !this.modelInfo) {
-            console.warn('⚠️ Model selection elements not found');
-            return;
+        // Show the upload form (it's always visible now)
+        if (this.uploadForm) {
+            this.uploadForm.style.display = 'block';
         }
         
-        // Load available models
-        this.loadAvailableModels();
+        // Setup guest name persistence
+        this.setupGuestNamePersistence();
+    }
+
+    setupGuestNamePersistence() {
+        console.log('💾 Setting up guest name persistence...');
         
-        // Handle model selection changes
-        this.modelSelect.addEventListener('change', (e) => {
-            this.selectModel(e.target.value);
+        const guestNameInput = document.getElementById('guestName');
+        if (!guestNameInput) return;
+        
+        // Load saved name
+        const savedName = localStorage.getItem('party_guest_name');
+        if (savedName) {
+            guestNameInput.value = savedName;
+            guestNameInput.placeholder = `Welcome back, ${savedName}! 👋`;
+            console.log(`🎊 Welcome back, ${savedName}!`);
+        }
+        
+        // Save name when entered
+        guestNameInput.addEventListener('input', (e) => {
+            const name = e.target.value.trim();
+            if (name) {
+                localStorage.setItem('party_guest_name', name);
+                console.log(`💾 Saved name: ${name}`);
+            }
+        });
+        
+        guestNameInput.addEventListener('blur', (e) => {
+            const name = e.target.value.trim();
+            if (name) {
+                e.target.placeholder = `Signed in as ${name} ✨`;
+            }
         });
     }
 
-    async loadAvailableModels() {
-        try {
-            const response = await fetch('/api/ollama/models');
-            const data = await response.json();
-            
-            if (data.ollama_available && data.models.length > 0) {
-                this.populateModelDropdown(data.models, data.current_model);
-                this.updateModelInfo(data.current_model, data.models);
-                
-                // Show the model selection section
-                if (this.modelSelectionSection) {
-                    this.modelSelectionSection.style.display = 'block';
-                }
-            } else {
-                this.showModelUnavailable(data.error || 'No models available');
-            }
-            
-        } catch (error) {
-            console.error('❌ Error loading models:', error);
-            this.showModelUnavailable('Failed to load models');
-        }
-    }
 
-    populateModelDropdown(models, currentModel) {
-        this.modelSelect.innerHTML = '';
-        
-        // Add models as options
-        models.forEach(model => {
-            const option = document.createElement('option');
-            option.value = model.name;
-            option.textContent = `${model.name} (${model.parameter_size})`;
-            
-            if (model.name === currentModel) {
-                option.selected = true;
-            }
-            
-            this.modelSelect.appendChild(option);
-        });
-    }
-
-    updateModelInfo(currentModel, models) {
-        if (!currentModel || !models) {
-            this.modelInfo.innerHTML = '<span class="model-status unavailable">❌ No model selected</span>';
-            return;
-        }
-        
-        const model = models.find(m => m.name === currentModel);
-        if (model) {
-            const sizeGB = (model.size / (1024 * 1024 * 1024)).toFixed(1);
-            
-            this.modelInfo.innerHTML = `
-                <span class="model-status available">✅ ${model.name} active</span>
-                <div class="model-details">
-                    Size: ${sizeGB} GB | Parameters: ${model.parameter_size} | Family: ${model.family}
-                </div>
-            `;
-        } else {
-            this.modelInfo.innerHTML = '<span class="model-status unavailable">⚠️ Model information unavailable</span>';
-        }
-    }
-
-    showModelUnavailable(error) {
-        this.modelSelect.innerHTML = '<option value="">Models unavailable</option>';
-        this.modelInfo.innerHTML = `<span class="model-status unavailable">❌ ${error}</span>`;
-        
-        // Still show the section so users know about the feature
-        if (this.modelSelectionSection) {
-            this.modelSelectionSection.style.display = 'block';
-        }
-    }
-
-    async selectModel(modelName) {
-        if (!modelName) return;
-        
-        try {
-            const response = await fetch('/api/ollama/select-model', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ model: modelName })
-            });
-            
-            const data = await response.json();
-            
-            if (response.ok) {
-                console.log(`✅ Model changed to: ${modelName}`);
-                this.loadAvailableModels(); // Refresh the info
-                
-                // Show brief confirmation
-                const originalText = this.modelInfo.innerHTML;
-                this.modelInfo.innerHTML = '<span class="model-status available">🔄 Model updated successfully!</span>';
-                
-                setTimeout(() => {
-                    this.loadAvailableModels();
-                }, 2000);
-                
-            } else {
-                console.error('❌ Error selecting model:', data.error);
-                this.modelInfo.innerHTML = `<span class="model-status unavailable">❌ Error: ${data.error}</span>`;
-            }
-            
-        } catch (error) {
-            console.error('❌ Error selecting model:', error);
-            this.modelInfo.innerHTML = '<span class="model-status unavailable">❌ Failed to change model</span>';
-        }
-    }
+    // ============================================================================
+    // MODEL SELECTION FUNCTIONALITY
+    // ============================================================================
+    // Model selection functionality removed per user request
+    // ============================================================================
 }
 
 // Global functions for HTML event handlers
 window.resetForm = function() {
-    console.log('🔄 Resetting form...');
+    console.log('🔄 Resetting modern form...');
     
     // Hide success/error messages
     const successMessage = document.getElementById('successMessage');
@@ -1158,23 +1100,17 @@ window.resetForm = function() {
     const uploadForm = document.getElementById('uploadForm');
     if (uploadForm) uploadForm.reset();
     
-    // Reset file input and preview
-    const fileInput = document.getElementById('fileInput');
-    const filePreviews = document.getElementById('filePreviews');
-    const uploadPrompt = document.getElementById('uploadPrompt');
-    
-    if (fileInput) fileInput.value = '';
-    if (filePreviews) filePreviews.style.display = 'none';
-    if (uploadPrompt) uploadPrompt.style.display = 'block';
-    
-    // Clear selected files
+    // Reset party upload instance
     if (window.partyUpload) {
         window.partyUpload.selectedFiles = [];
+        window.partyUpload.fileInput.value = '';
         window.partyUpload.updateSubmitButton();
     }
     
-    // Scroll to top
+    // Scroll to top smoothly
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    console.log('✅ Modern form reset complete');
 };
 
 window.viewSlideshow = function() {

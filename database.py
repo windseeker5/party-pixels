@@ -50,7 +50,8 @@ class PartyDatabase:
             file_size INTEGER,
             duration INTEGER,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-            processed BOOLEAN DEFAULT FALSE
+            processed BOOLEAN DEFAULT FALSE,
+            birthday_note TEXT
         )
         ''')
         
@@ -143,6 +144,25 @@ class PartyDatabase:
         
         conn.commit()
         conn.close()
+        
+        # Run migrations for existing databases
+        self._run_migrations()
+    
+    def _run_migrations(self):
+        """Run database migrations for existing databases"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        # Check if birthday_note column exists, if not add it
+        cursor.execute("PRAGMA table_info(uploads)")
+        columns = [column[1] for column in cursor.fetchall()]
+        
+        if 'birthday_note' not in columns:
+            cursor.execute('ALTER TABLE uploads ADD COLUMN birthday_note TEXT')
+            print("✅ Added birthday_note column to uploads table")
+        
+        conn.commit()
+        conn.close()
     
     def _create_indexes(self):
         """Create database indexes for better performance"""
@@ -199,7 +219,8 @@ class PartyDatabase:
     
     def add_upload(self, device_id: str, guest_name: str, file_path: str, 
                   file_type: str, original_filename: str = None, 
-                  file_size: int = None, duration: int = None) -> int:
+                  file_size: int = None, duration: int = None, 
+                  birthday_note: str = None) -> int:
         """Add new upload record and update device tracking"""
         if not device_id or not file_path or not file_type:
             raise ValueError("device_id, file_path, and file_type are required")
@@ -211,10 +232,10 @@ class PartyDatabase:
             # Insert upload record
             cursor.execute('''
             INSERT INTO uploads (device_id, guest_name, file_path, file_type, 
-                               original_filename, file_size, duration)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+                               original_filename, file_size, duration, birthday_note)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ''', (device_id, guest_name, file_path, file_type, 
-                  original_filename, file_size, duration))
+                  original_filename, file_size, duration, birthday_note))
             
             upload_id = cursor.lastrowid
             
@@ -256,7 +277,7 @@ class PartyDatabase:
         
         cursor.execute('''
         SELECT id, device_id, guest_name, file_path, file_type, 
-               original_filename, file_size, duration, timestamp
+               original_filename, file_size, duration, timestamp, birthday_note
         FROM uploads
         WHERE file_type IN ('photo', 'video') AND processed = TRUE
         ORDER BY timestamp DESC
