@@ -59,21 +59,6 @@
                 <div class="input-hint">Help us attribute your memories!</div>
             </div>
 
-            <div class="form-group">
-                <label for="songTitle">
-                    <span class="label-icon">🎵</span>
-                    Song title (for music files):
-                </label>
-                <input type="text" id="songTitle" name="songTitle" placeholder="Song name" maxlength="100">
-            </div>
-
-            <div class="form-group">
-                <label for="artist">
-                    <span class="label-icon">🎤</span>
-                    Artist name (for music files):
-                </label>
-                <input type="text" id="artist" name="artist" placeholder="Artist or band name" maxlength="100">
-            </div>
 
             <!-- MUSIC SEARCH SECTION -->
             <div class="music-search-section" id="musicSearchSection">
@@ -124,6 +109,26 @@
                 </div>
             </div>
 
+            <!-- MODEL SELECTION SECTION -->
+            <div class="model-selection-section" id="modelSelectionSection" style="display: none;">
+                <div class="section-divider">
+                    <span class="divider-text">🤖 AI Model Settings 🤖</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="modelSelect">
+                        <span class="label-icon">⚙️</span>
+                        AI Model for Music Search:
+                    </label>
+                    <select id="modelSelect" class="model-selector">
+                        <option value="">Loading models...</option>
+                    </select>
+                    <div class="model-info" id="modelInfo">
+                        <span class="model-status">🔄 Checking model availability...</span>
+                    </div>
+                </div>
+            </div>
+
             <button type="submit" class="share-button" id="shareButton" disabled>
                 <span class="button-icon">🎉</span>
                 <span class="button-text">Select files first</span>
@@ -169,6 +174,7 @@
         <p>💝 Made with love for Valérie's 50th Birthday</p>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
     <script src="party-upload.js"></script>
 </body>
 </html>

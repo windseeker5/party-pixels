@@ -752,6 +752,92 @@ def download_youtube_music():
         logger.error(f"Error downloading YouTube music: {e}")
         return jsonify({'error': 'YouTube download failed'}), 500
 
+@app.route('/api/ollama/models', methods=['GET'])
+def get_available_models():
+    """Get available Ollama models"""
+    try:
+        import requests
+        response = requests.get('http://127.0.0.1:11434/api/tags', timeout=5)
+        
+        if response.status_code == 200:
+            data = response.json()
+            models = []
+            
+            for model in data.get('models', []):
+                model_info = {
+                    'name': model['name'],
+                    'size': model['size'],
+                    'modified_at': model['modified_at'],
+                    'parameter_size': model.get('details', {}).get('parameter_size', 'Unknown'),
+                    'family': model.get('details', {}).get('family', 'Unknown')
+                }
+                models.append(model_info)
+            
+            # Get current selected model
+            current_model = db.get_setting('ollama_model', 'llama3.1:8b')
+            
+            return jsonify({
+                'models': models,
+                'current_model': current_model,
+                'ollama_available': True
+            })
+        else:
+            return jsonify({
+                'models': [],
+                'current_model': None,
+                'ollama_available': False,
+                'error': 'Ollama server not responding'
+            })
+            
+    except Exception as e:
+        logger.error(f"Error fetching Ollama models: {e}")
+        return jsonify({
+            'models': [],
+            'current_model': None,
+            'ollama_available': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/ollama/select-model', methods=['POST'])
+def select_ollama_model():
+    """Select which Ollama model to use for music search"""
+    try:
+        data = request.get_json()
+        model_name = data.get('model')
+        
+        if not model_name:
+            return jsonify({'error': 'Model name is required'}), 400
+        
+        # Verify the model exists
+        import requests
+        response = requests.get('http://127.0.0.1:11434/api/tags', timeout=5)
+        
+        if response.status_code == 200:
+            available_models = [m['name'] for m in response.json().get('models', [])]
+            
+            if model_name not in available_models:
+                return jsonify({'error': f'Model {model_name} is not available'}), 400
+            
+            # Save the selected model
+            db.update_setting('ollama_model', model_name)
+            
+            # Update the music search service to use the new model
+            global music_search_service
+            music_search_service.selected_model = model_name
+            
+            logger.info(f"Ollama model changed to: {model_name}")
+            
+            return jsonify({
+                'message': f'Model changed to {model_name}',
+                'selected_model': model_name
+            })
+        else:
+            return jsonify({'error': 'Cannot verify model availability'}), 500
+            
+    except Exception as e:
+        logger.error(f"Error selecting Ollama model: {e}")
+        return jsonify({'error': str(e)}), 500
+
 # Health check
 @app.route('/health')
 def health_check():

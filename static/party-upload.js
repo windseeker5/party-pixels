@@ -50,14 +50,17 @@ class PartyUpload {
             
             // Setup event listeners
             this.setupEventListeners();
-            // TODO: Fix WebSocket connection for real-time updates
-            // this.setupWebSocket();
+            // Setup Socket.IO connection for real-time updates
+            this.setupWebSocket();
             
             // Setup form validation
             this.setupFormValidation();
             
             // Setup music search functionality
             this.setupMusicSearch();
+            
+            // Setup model selection functionality
+            this.setupModelSelection();
             
             console.log('✅ Party Upload Interface initialized successfully');
             
@@ -141,53 +144,75 @@ class PartyUpload {
     }
 
     setupWebSocket() {
-        if (!window.WebSocket) {
-            console.warn('⚠️ WebSocket not supported');
+        if (!window.io) {
+            console.warn('⚠️ Socket.IO not loaded');
+            this.updateConnectionStatus('disconnected', 'Socket.IO unavailable');
             return;
         }
         
-        console.log('🔌 Setting up WebSocket connection...');
-        
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const wsUrl = `${protocol}//${window.location.host}/ws`;
+        console.log('🔌 Setting up Socket.IO connection...');
+        this.updateConnectionStatus('connecting', 'Connecting to server...');
         
         try {
-            this.websocket = new WebSocket(wsUrl);
+            this.websocket = io({
+                transports: ['polling', 'websocket'],
+                upgrade: true
+            });
             
-            this.websocket.onopen = () => {
-                console.log('✅ WebSocket connected');
+            this.websocket.on('connect', () => {
+                console.log('✅ Socket.IO connected');
                 this.connectionRetryCount = 0;
-                this.updateConnectionStatus('connected', 'Connected');
-            };
+                this.updateConnectionStatus('connected', 'Connected to party server');
+            });
             
-            this.websocket.onclose = () => {
-                console.log('🔌 WebSocket disconnected');
+            this.websocket.on('disconnect', (reason) => {
+                console.log('🔌 Socket.IO disconnected:', reason);
                 this.updateConnectionStatus('disconnected', 'Disconnected');
-                this.scheduleWebSocketReconnect();
-            };
+                if (reason === 'io server disconnect') {
+                    // Server disconnected, reconnect manually
+                    this.scheduleWebSocketReconnect();
+                }
+            });
             
-            this.websocket.onerror = (error) => {
-                console.error('❌ WebSocket error:', error);
-                this.updateConnectionStatus('disconnected', 'Connection Error');
-            };
+            this.websocket.on('connect_error', (error) => {
+                console.error('❌ Socket.IO connection error:', error);
+                this.updateConnectionStatus('disconnected', 'Connection failed');
+                this.scheduleWebSocketReconnect();
+            });
+            
+            // Listen for real-time updates
+            this.websocket.on('new_upload', (data) => {
+                console.log('📸 New upload notification:', data);
+            });
+            
+            this.websocket.on('music_update', (data) => {
+                console.log('🎵 Music update notification:', data);
+            });
             
         } catch (error) {
-            console.error('❌ Failed to create WebSocket:', error);
-            this.updateConnectionStatus('disconnected', 'Failed to Connect');
+            console.error('❌ Failed to create Socket.IO connection:', error);
+            this.updateConnectionStatus('disconnected', 'Failed to connect');
         }
     }
 
     scheduleWebSocketReconnect() {
         if (this.connectionRetryCount >= this.maxRetries) {
-            console.log('❌ Max WebSocket reconnection attempts reached');
+            console.log('❌ Max Socket.IO reconnection attempts reached');
+            this.updateConnectionStatus('disconnected', 'Connection failed');
             return;
         }
         
         this.connectionRetryCount++;
         const delay = Math.min(1000 * Math.pow(2, this.connectionRetryCount), 10000);
         
+        this.updateConnectionStatus('connecting', `Reconnecting... (${this.connectionRetryCount}/${this.maxRetries})`);
+        
         setTimeout(() => {
-            this.setupWebSocket();
+            if (this.websocket) {
+                this.websocket.connect();
+            } else {
+                this.setupWebSocket();
+            }
         }, delay);
     }
 
@@ -481,15 +506,22 @@ class PartyUpload {
                 successDetails.textContent = `${fileCount} ${fileWord} uploaded successfully! They will appear on the big screen soon.`;
             }
             
-            // Hide upload container and show success
+            // Don't hide upload container - just show success message prominently
             const uploadContainer = document.querySelector('.upload-container');
-            if (uploadContainer) {
-                uploadContainer.style.display = 'none';
-            }
+            // Instead of hiding, just scroll to success message
             
             // Make success message very visible
             successMessage.style.display = 'block';
-            successMessage.style.zIndex = '9999'; // Bring to front
+            successMessage.style.position = 'fixed';
+            successMessage.style.top = '50%';
+            successMessage.style.left = '50%';
+            successMessage.style.transform = 'translate(-50%, -50%)';
+            successMessage.style.zIndex = '9999';
+            successMessage.style.width = '90%';
+            successMessage.style.maxWidth = '400px';
+            successMessage.style.background = 'rgba(0, 255, 0, 0.9)';
+            successMessage.style.border = '3px solid #00ff00';
+            successMessage.style.color = '#000';
             
             // Scroll to top to show success message
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -505,6 +537,11 @@ class PartyUpload {
                 });
             }
             
+            // Auto-hide after 4 seconds
+            setTimeout(() => {
+                this.hideSuccessMessage();
+            }, 4000);
+            
             console.log('🎉 Success message displayed successfully');
         } else {
             console.error('❌ Success message element not found!');
@@ -515,6 +552,28 @@ class PartyUpload {
         // Clear selected files
         this.selectedFiles = [];
         this.fileInput.value = '';
+    }
+
+    hideSuccessMessage() {
+        const successMessage = document.getElementById('successMessage');
+        if (successMessage) {
+            // Reset positioning
+            successMessage.style.position = '';
+            successMessage.style.top = '';
+            successMessage.style.left = '';
+            successMessage.style.transform = '';
+            successMessage.style.width = '';
+            successMessage.style.maxWidth = '';
+            successMessage.style.background = '';
+            successMessage.style.border = '';
+            successMessage.style.color = '';
+            
+            // Hide the message
+            successMessage.style.display = 'none';
+            successMessage.classList.remove('animate-success');
+            
+            console.log('🔄 Success message hidden and reset');
+        }
     }
 
     handleUploadError(errorMessage) {
@@ -813,23 +872,32 @@ class PartyUpload {
                 </div>
             </div>
             <div class="result-actions">
-                <button class="add-btn" onclick="window.partyUpload.addMusicToQueue('${source}', ${this.escapeForJs(JSON.stringify(song))})">
+                <button class="add-btn" data-source="${source}">
                     Add to Queue
                 </button>
             </div>
         `;
         
+        // Add event listener to the button
+        const button = div.querySelector('.add-btn');
+        button.addEventListener('click', (event) => {
+            this.addMusicToQueue(source, song, event.target);
+        });
+        
         return div;
     }
 
-    async addMusicToQueue(source, song) {
+    async addMusicToQueue(source, song, button = null) {
         const guestName = document.getElementById('guestName')?.value || 'Anonymous';
         
         console.log(`🎵 Adding ${source} music to queue:`, song);
         
-        // Find the button for this song to update its state
-        const button = event.target;
-        const originalText = button.textContent;
+        // If no button passed, find it from the event
+        if (!button && event && event.target) {
+            button = event.target;
+        }
+        
+        const originalText = button ? button.textContent : 'Add to Queue';
         
         try {
             if (source === 'local') {
@@ -857,15 +925,19 @@ class PartyUpload {
                 const result = await response.json();
                 console.log('✅ Local music added to queue:', result);
                 
-                button.textContent = '✅ Added!';
-                button.className = 'add-btn added';
-                button.disabled = true;
+                if (button) {
+                    button.textContent = '✅ Added!';
+                    button.className = 'add-btn added';
+                    button.disabled = true;
+                }
                 
             } else if (source === 'youtube') {
                 // Download from YouTube first
-                button.textContent = 'Downloading...';
-                button.className = 'add-btn downloading';
-                button.disabled = true;
+                if (button) {
+                    button.textContent = 'Downloading...';
+                    button.className = 'add-btn downloading';
+                    button.disabled = true;
+                }
                 
                 const response = await fetch('/api/music/download', {
                     method: 'POST',
@@ -888,8 +960,10 @@ class PartyUpload {
                 const result = await response.json();
                 console.log('✅ YouTube music downloaded and queued:', result);
                 
-                button.textContent = '✅ Downloaded!';
-                button.className = 'add-btn added';
+                if (button) {
+                    button.textContent = '✅ Downloaded!';
+                    button.className = 'add-btn added';
+                }
             }
             
         } catch (error) {
@@ -897,9 +971,11 @@ class PartyUpload {
             this.showError(`Failed to add "${song.title}" to queue`);
             
             // Reset button
-            button.textContent = originalText;
-            button.className = 'add-btn';
-            button.disabled = false;
+            if (button) {
+                button.textContent = originalText;
+                button.className = 'add-btn';
+                button.disabled = false;
+            }
         }
     }
 
@@ -933,6 +1009,139 @@ class PartyUpload {
 
     escapeForJs(text) {
         return text.replace(/'/g, "\\'").replace(/"/g, '\\"');
+    }
+
+    // ============================================================================
+    // MODEL SELECTION FUNCTIONALITY
+    // ============================================================================
+
+    setupModelSelection() {
+        console.log('🤖 Setting up model selection functionality');
+        
+        this.modelSelectionSection = document.getElementById('modelSelectionSection');
+        this.modelSelect = document.getElementById('modelSelect');
+        this.modelInfo = document.getElementById('modelInfo');
+        
+        if (!this.modelSelect || !this.modelInfo) {
+            console.warn('⚠️ Model selection elements not found');
+            return;
+        }
+        
+        // Load available models
+        this.loadAvailableModels();
+        
+        // Handle model selection changes
+        this.modelSelect.addEventListener('change', (e) => {
+            this.selectModel(e.target.value);
+        });
+    }
+
+    async loadAvailableModels() {
+        try {
+            const response = await fetch('/api/ollama/models');
+            const data = await response.json();
+            
+            if (data.ollama_available && data.models.length > 0) {
+                this.populateModelDropdown(data.models, data.current_model);
+                this.updateModelInfo(data.current_model, data.models);
+                
+                // Show the model selection section
+                if (this.modelSelectionSection) {
+                    this.modelSelectionSection.style.display = 'block';
+                }
+            } else {
+                this.showModelUnavailable(data.error || 'No models available');
+            }
+            
+        } catch (error) {
+            console.error('❌ Error loading models:', error);
+            this.showModelUnavailable('Failed to load models');
+        }
+    }
+
+    populateModelDropdown(models, currentModel) {
+        this.modelSelect.innerHTML = '';
+        
+        // Add models as options
+        models.forEach(model => {
+            const option = document.createElement('option');
+            option.value = model.name;
+            option.textContent = `${model.name} (${model.parameter_size})`;
+            
+            if (model.name === currentModel) {
+                option.selected = true;
+            }
+            
+            this.modelSelect.appendChild(option);
+        });
+    }
+
+    updateModelInfo(currentModel, models) {
+        if (!currentModel || !models) {
+            this.modelInfo.innerHTML = '<span class="model-status unavailable">❌ No model selected</span>';
+            return;
+        }
+        
+        const model = models.find(m => m.name === currentModel);
+        if (model) {
+            const sizeGB = (model.size / (1024 * 1024 * 1024)).toFixed(1);
+            
+            this.modelInfo.innerHTML = `
+                <span class="model-status available">✅ ${model.name} active</span>
+                <div class="model-details">
+                    Size: ${sizeGB} GB | Parameters: ${model.parameter_size} | Family: ${model.family}
+                </div>
+            `;
+        } else {
+            this.modelInfo.innerHTML = '<span class="model-status unavailable">⚠️ Model information unavailable</span>';
+        }
+    }
+
+    showModelUnavailable(error) {
+        this.modelSelect.innerHTML = '<option value="">Models unavailable</option>';
+        this.modelInfo.innerHTML = `<span class="model-status unavailable">❌ ${error}</span>`;
+        
+        // Still show the section so users know about the feature
+        if (this.modelSelectionSection) {
+            this.modelSelectionSection.style.display = 'block';
+        }
+    }
+
+    async selectModel(modelName) {
+        if (!modelName) return;
+        
+        try {
+            const response = await fetch('/api/ollama/select-model', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ model: modelName })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                console.log(`✅ Model changed to: ${modelName}`);
+                this.loadAvailableModels(); // Refresh the info
+                
+                // Show brief confirmation
+                const originalText = this.modelInfo.innerHTML;
+                this.modelInfo.innerHTML = '<span class="model-status available">🔄 Model updated successfully!</span>';
+                
+                setTimeout(() => {
+                    this.loadAvailableModels();
+                }, 2000);
+                
+            } else {
+                console.error('❌ Error selecting model:', data.error);
+                this.modelInfo.innerHTML = `<span class="model-status unavailable">❌ Error: ${data.error}</span>`;
+            }
+            
+        } catch (error) {
+            console.error('❌ Error selecting model:', error);
+            this.modelInfo.innerHTML = '<span class="model-status unavailable">❌ Failed to change model</span>';
+        }
     }
 }
 

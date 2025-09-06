@@ -20,6 +20,7 @@ class MusicSearchService:
         self.db = db
         self.ollama_host = ollama_host
         self.ollama_available = self._test_ollama_connection()
+        self.selected_model = None  # Will be loaded dynamically
     
     def _test_ollama_connection(self) -> bool:
         """Test if Ollama is available"""
@@ -167,12 +168,24 @@ class MusicSearchService:
         
         return None
     
+    def get_selected_model(self) -> str:
+        """Get the currently selected Ollama model"""
+        if self.selected_model:
+            return self.selected_model
+        
+        # Load from database
+        selected = self.db.get_setting('ollama_model', 'llama3.1:8b')
+        self.selected_model = selected
+        return selected
+    
     def search_with_ollama(self, query: str) -> Optional[str]:
         """Use Ollama to enhance search query"""
         if not self.ollama_available:
             return query
         
         try:
+            model = self.get_selected_model()
+            
             prompt = f"""Given this music search query: "{query}"
 
 Extract the key information and suggest 2-3 alternative search terms that would help find similar music.
@@ -185,7 +198,7 @@ Search terms:"""
             response = requests.post(
                 f"{self.ollama_host}/api/generate",
                 json={
-                    "model": "llama3.1:8b",
+                    "model": model,
                     "prompt": prompt,
                     "stream": False
                 },

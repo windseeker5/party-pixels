@@ -182,7 +182,8 @@ class PartyDatabase:
             'allowed_photo_types': json.dumps(['jpg', 'jpeg', 'png', 'gif', 'heic', 'webp']),
             'allowed_video_types': json.dumps(['mp4', 'mov', 'avi', 'webm', 'm4v', 'mkv']),
             'allowed_music_types': json.dumps(['mp3', 'm4a', 'wav', 'flac']),
-            'weekend_days': '2'
+            'weekend_days': '2',
+            'ollama_model': 'deepseek-coder:6.7b'  # Best for Raspberry Pi
         }
         
         conn = self.get_connection()

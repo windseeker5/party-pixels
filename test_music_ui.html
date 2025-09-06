@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Music Search Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #1a1a1a; color: white; }
+        .search-container { margin: 20px 0; }
+        input[type="text"] { padding: 10px; width: 300px; }
+        button { padding: 10px 20px; margin-left: 10px; }
+        .results { margin-top: 20px; }
+        .result { padding: 10px; border: 1px solid #333; margin: 5px 0; }
+        .loading { color: #FFD700; }
+        .error { color: #ff4444; }
+    </style>
+</head>
+<body>
+    <h1>🎵 Music Search Debug Tool</h1>
+    
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search for music..." value="evanescence">
+        <button onclick="searchMusic()">Search</button>
+    </div>
+    
+    <div id="status"></div>
+    <div id="results" class="results"></div>
+
+    <script>
+        async function searchMusic() {
+            const query = document.getElementById('searchInput').value.trim();
+            const status = document.getElementById('status');
+            const results = document.getElementById('results');
+            
+            if (!query) {
+                status.innerHTML = '<div class="error">Please enter a search query</div>';
+                return;
+            }
+            
+            console.log('Searching for:', query);
+            status.innerHTML = '<div class="loading">Searching...</div>';
+            results.innerHTML = '';
+            
+            try {
+                const response = await fetch('/api/music/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query: query,
+                        local_limit: 5,
+                        youtube_limit: 3
+                    }),
+                });
+                
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`Search failed: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Search results:', data);
+                
+                status.innerHTML = `<div style="color: #44ff44">Found ${data.total_results} results</div>`;
+                
+                // Display local results
+                if (data.local && data.local.length > 0) {
+                    results.innerHTML += '<h3>📀 Local Results</h3>';
+                    data.local.forEach(song => {
+                        results.innerHTML += `
+                            <div class="result">
+                                <strong>${song.title || 'Unknown'}</strong> by ${song.artist || 'Unknown Artist'}
+                                <br>Album: ${song.album || 'Unknown'} | Source: ${song.source}
+                                <br><button onclick="testAdd('local', ${JSON.stringify(song).replace(/"/g, '&quot;')})">Add to Queue</button>
+                            </div>
+                        `;
+                    });
+                }
+                
+                // Display YouTube results
+                if (data.youtube && data.youtube.length > 0) {
+                    results.innerHTML += '<h3>🌐 YouTube Results</h3>';
+                    data.youtube.forEach(song => {
+                        results.innerHTML += `
+                            <div class="result">
+                                <strong>${song.title || 'Unknown'}</strong> by ${song.artist || 'Unknown Artist'}
+                                <br>Source: ${song.source}
+                                <br><button onclick="testAdd('youtube', ${JSON.stringify(song).replace(/"/g, '&quot;')})">Download & Add</button>
+                            </div>
+                        `;
+                    });
+                }
+                
+                if (data.total_results === 0) {
+                    results.innerHTML = '<div class="error">No results found. Try different keywords.</div>';
+                }
+                
+            } catch (error) {
+                console.error('Search error:', error);
+                status.innerHTML = `<div class="error">Search failed: ${error.message}</div>`;
+            }
+        }
+        
+        function testAdd(source, song) {
+            console.log(`Testing add ${source} music:`, song);
+            alert(`Would add: ${song.title} by ${song.artist} from ${source}`);
+        }
+        
+        // Test on page load
+        window.addEventListener('load', () => {
+            console.log('Music search debug tool loaded');
+            // Auto-search for evanescence
+            setTimeout(searchMusic, 1000);
+        });
+    </script>
+</body>
+</html>
