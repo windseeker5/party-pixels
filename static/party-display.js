@@ -343,26 +343,115 @@ class PartyDisplay {
         const birthdayNote = slideData?.birthday_note;
         
         if (birthdayNote && birthdayNote.trim()) {
-            birthdayNoteText.textContent = birthdayNote;
-            birthdayNoteOverlay.style.display = 'block';
-            birthdayNoteOverlay.style.opacity = '0';
-            
-            // Fade in after 2 seconds
-            setTimeout(() => {
-                birthdayNoteOverlay.style.transition = 'opacity 0.5s ease-in-out';
-                birthdayNoteOverlay.style.opacity = '1';
-                
-                // Fade out after 5 seconds
-                setTimeout(() => {
-                    birthdayNoteOverlay.style.opacity = '0';
-                    setTimeout(() => {
-                        birthdayNoteOverlay.style.display = 'none';
-                    }, 500);
-                }, 5000);
-            }, 2000);
+            // Apply social media effects with typewriter animation
+            this.showSocialMediaNote(birthdayNote, birthdayNoteOverlay, birthdayNoteText);
         } else {
             birthdayNoteOverlay.style.display = 'none';
         }
+    }
+
+    showSocialMediaNote(noteText, overlay, textElement) {
+        console.log('🎬 Showing social media style note:', noteText);
+        
+        // Hide overlay initially
+        overlay.style.display = 'none';
+        overlay.style.opacity = '0';
+        
+        // Clear previous content and classes
+        textElement.textContent = '';
+        textElement.className = '';
+        
+        const noteContent = overlay.querySelector('.birthday-note-content');
+        if (noteContent) {
+            // Remove previous style classes
+            noteContent.classList.remove('story-style', 'glitch-style');
+            
+            // Randomly choose a social media style
+            const styles = ['gradient', 'story-style', 'glitch-style'];
+            const randomStyle = styles[Math.floor(Math.random() * styles.length)];
+            
+            if (randomStyle !== 'gradient') {
+                noteContent.classList.add(randomStyle);
+            }
+            
+            // Add floating hearts effect randomly
+            if (Math.random() > 0.5) {
+                this.addFloatingHearts(noteContent);
+            }
+        }
+        
+        // Show overlay with social media animation
+        overlay.style.display = 'block';
+        
+        // Start typewriter effect after slide-up animation
+        setTimeout(() => {
+            overlay.style.opacity = '1';
+            this.typeWriterEffect(textElement, noteText);
+        }, 1500); // Start after photo loads
+        
+        // Auto-hide after 6 seconds (longer for typing effect)
+        setTimeout(() => {
+            this.hideSocialMediaNote(overlay);
+        }, 8000);
+    }
+
+    typeWriterEffect(element, text) {
+        element.classList.add('birthday-note-typing');
+        element.textContent = '';
+        
+        let index = 0;
+        const speed = 80; // Typing speed in ms
+        
+        const typeChar = () => {
+            if (index < text.length) {
+                element.textContent += text.charAt(index);
+                index++;
+                setTimeout(typeChar, speed);
+            } else {
+                // Remove cursor when typing is complete
+                setTimeout(() => {
+                    element.classList.add('complete');
+                }, 500);
+            }
+        };
+        
+        // Add typing sound effect (subtle)
+        console.log('⌨️ Starting typewriter effect...');
+        typeChar();
+    }
+
+    addFloatingHearts(container) {
+        // Remove existing hearts
+        const existingHearts = container.querySelector('.birthday-note-hearts');
+        if (existingHearts) {
+            existingHearts.remove();
+        }
+        
+        // Add floating hearts
+        const hearts = document.createElement('div');
+        hearts.className = 'birthday-note-hearts';
+        hearts.innerHTML = '💕';
+        container.appendChild(hearts);
+        
+        // Remove hearts after animation
+        setTimeout(() => {
+            if (hearts.parentNode) {
+                hearts.parentNode.removeChild(hearts);
+            }
+        }, 6000);
+    }
+
+    hideSocialMediaNote(overlay) {
+        // Fade out with social media style
+        overlay.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        overlay.style.opacity = '0';
+        overlay.style.transform = 'translateX(-50%) translateY(50px) scale(0.9)';
+        
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            // Reset transform for next use
+            overlay.style.transform = 'translateX(-50%)';
+        }, 600);
     }
 
     startSlideshow() {

@@ -18,7 +18,6 @@ Party Memory Wall is a Flask-based web application designed for Valérie's 50th 
 
 **Development Mode:**
 ```bash
-cd backend
 python3 -m venv venv
 source venv/bin/activate  
 pip install -r requirements.txt
@@ -42,7 +41,7 @@ python -m pytest test/test_websocket.py -v     # WebSocket tests
 python -m pytest test/test_integration.py -v   # End-to-end tests
 
 # Quick validation
-python3 test_basic.py
+python3 test/test_basic.py
 ```
 
 **CRITICAL:** Flask MUST run on port 6000 for testing compatibility. The main app.py currently runs on port 8000 but tests expect port 6000.
@@ -66,16 +65,17 @@ docker cp party-memory-wall:/app/media ./party-memories
 ## Architecture
 
 ### Backend (Flask + SQLite)
-- **Main App**: `backend/app.py` - Flask server with SocketIO for real-time updates
-- **Database**: `backend/database.py` - SQLite database operations
+- **Main App**: `app.py` - Flask server with SocketIO for real-time updates
+- **Database**: `database.py` - SQLite database operations
+- **Music Search**: `music_search.py` - YouTube search and local music management
 - **Port**: 8000 for main deployment, 6000 required for testing
 - **File Storage**: `media/` directory with subdirectories for photos/, videos/, music/
 - **WebSocket**: Real-time updates for new uploads and slideshow control
 
 ### Frontend (Vanilla JS + CSS)
-- **Slideshow Display**: `frontend/index.html` + `frontend/party-display.js`
-- **Upload Interface**: `frontend/upload.html` + `frontend/party-upload.js`
-- **Styling**: `frontend/styles.css` with hardware-accelerated animations
+- **Slideshow Display**: `static/index.html` + `static/party-display.js`
+- **Upload Interface**: `static/upload.html` + `static/party-upload.js`
+- **Styling**: `static/styles.css` with hardware-accelerated animations
 - **Key Feature**: Permanent "Happy 50th Birthday Valérie!" title with shimmer animation
 - **Responsive**: Mobile-first design optimized for touch interactions
 
@@ -152,7 +152,7 @@ The application is specifically configured for Valérie's 50th Birthday:
 
 ## Development Workflow
 
-1. **Code Changes**: Edit files in `backend/` or `frontend/` directories
+1. **Code Changes**: Edit files in root directory or `static/` directories
 2. **Testing**: Run relevant tests from `test/` directory  
 3. **Local Testing**: Use development mode with Flask debug enabled
 4. **Container Testing**: Use Docker compose for production-like environment
@@ -162,19 +162,19 @@ The application is specifically configured for Valérie's 50th Birthday:
 
 ```
 party-wall/
-├── backend/           # Flask application
-│   ├── app.py         # Main Flask server
-│   ├── database.py    # SQLite database operations
-│   └── requirements.txt
-├── frontend/          # Web interface files  
-│   ├── index.html     # Slideshow display
-│   ├── upload.html    # Mobile upload interface
-│   ├── styles.css     # Hardware-accelerated CSS
+├── app.py            # Main Flask server
+├── database.py       # SQLite database operations
+├── music_search.py   # YouTube search service
+├── requirements.txt  # Python dependencies
+├── static/           # Web interface files
 │   ├── party-display.js  # Slideshow logic
-│   └── party-upload.js   # Upload handling
+│   ├── party-upload.js   # Upload handling
+│   └── styles.css        # Hardware-accelerated CSS
+├── templates/        # Flask templates (if any)
 ├── test/             # Comprehensive test suite
 ├── media/            # Uploaded content storage
-├── plan/             # Implementation documentation
-├── nginx/            # NGINX configuration
+├── database/         # SQLite database storage
+├── venv/             # Python virtual environment
+├── start-party.sh    # Docker startup script
 └── docker-compose-party.yml  # Container orchestration
 ```

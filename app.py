@@ -440,136 +440,267 @@ def birthday_report():
         music_uploads = [upload for upload in uploads if upload['file_type'] == 'music']
         media_uploads = [upload for upload in uploads if upload['file_type'] in ('photo', 'video')]
         
-        # Generate HTML report
+        # Get party statistics
+        stats = db.get_statistics()
+        unique_contributors = len(set(upload['guest_name'] for upload in uploads if upload['guest_name']))
+        
+        # Generate HTML report with dark theme
         html = f'''<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Valérie's 50th Birthday Memory Book</title>
     <style>
         body {{
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            max-width: 800px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            line-height: 1.6;
-            background: linear-gradient(135deg, #FFD700 0%, #FF69B4 100%);
+            line-height: 1.5;
+            background: #f8f9fa;
+            color: #333;
             min-height: 100vh;
         }}
         .container {{
             background: white;
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }}
         h1 {{
             text-align: center;
-            color: #FF1493;
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 3em;
+            margin-bottom: 15px;
+            font-family: 'Great Vibes', cursive;
+            text-shadow: 2px 2px 4px rgba(255, 215, 0, 0.3);
         }}
         .subtitle {{
             text-align: center;
-            color: #666;
-            font-size: 1.2em;
-            margin-bottom: 40px;
-        }}
-        .memory-item {{
-            margin: 30px 0;
-            padding: 20px;
-            border-left: 4px solid #FFD700;
-            background: #f9f9f9;
-            border-radius: 0 10px 10px 0;
-        }}
-        .contributor {{
-            font-weight: bold;
-            color: #FF1493;
-            font-size: 1.1em;
-        }}
-        .filename {{
-            color: #666;
-            font-size: 0.9em;
-            margin: 5px 0;
-        }}
-        .birthday-note {{
-            background: #fff;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 10px 0;
-            border-left: 3px solid #FF69B4;
+            color: #FFD700;
+            font-size: 1.3em;
+            margin-bottom: 50px;
             font-style: italic;
         }}
-        .music-section {{
-            margin-top: 40px;
-            padding-top: 30px;
-            border-top: 2px solid #FFD700;
+        .submissions-table {{
+            margin: 30px 0;
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+            width: 100%;
+        }}
+        .table-header {{
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 2fr 1.5fr 3fr;
+            background: #f8f9fa;
+            color: #333;
+            font-weight: bold;
+            padding: 15px 10px;
+            border-bottom: 2px solid #ddd;
+        }}
+        .table-row {{
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 2fr 1.5fr 3fr;
+            padding: 12px 10px;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }}
+        .table-row:nth-child(even) {{
+            background: #f9f9f9;
+        }}
+        .table-row:hover {{
+            background: #e9ecef;
+        }}
+        .col-time {{
+            font-size: 0.9em;
+            color: #666;
+        }}
+        .col-person {{
+            font-weight: bold;
+            color: #333;
+        }}
+        .col-photo {{
+            text-align: center;
+            padding: 8px;
+        }}
+        .photo-card {{
+            display: inline-block;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }}
+        .thumbnail {{
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 2px;
+            display: block;
+        }}
+        .photo-filename {{
+            font-size: 0.7em;
+            color: #666;
+            text-align: center;
+            margin-top: 2px;
+            word-break: break-all;
+            max-width: 80px;
+        }}
+        .col-song {{
+            text-align: center;
+        }}
+        .song-link {{
+            color: #FFD700;
+            text-decoration: none;
+            font-size: 0.9em;
+            padding: 4px 8px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 4px;
+            display: inline-block;
+        }}
+        .song-link:hover {{
+            background: rgba(255, 215, 0, 0.1);
+            text-decoration: underline;
+        }}
+        .col-message {{
+            font-style: italic;
+            color: #e0e0e0;
+            font-size: 0.95em;
+            line-height: 1.4;
         }}
         .stats {{
             text-align: center;
-            background: #f0f8ff;
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 40px 0;
+        }}
+        .stats-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }}
+        .stat-item {{
+            background: rgba(26, 26, 26, 0.8);
             padding: 20px;
             border-radius: 10px;
-            margin: 30px 0;
+            border: 1px solid rgba(255, 215, 0, 0.2);
         }}
         .emoji {{
-            font-size: 1.5em;
-            margin: 0 5px;
+            font-size: 1.8em;
+            margin: 0 8px;
+        }}
+        h2 {{
+            color: #FFD700;
+            font-size: 2.2em;
+            margin: 40px 0 30px 0;
+            text-align: center;
+            font-family: 'Great Vibes', cursive;
+        }}
+        .footer {{
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px;
+            color: #888;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+        }}
+        @media print {{
+            body {{ 
+                background: white; 
+                color: black;
+            }}
+            .container {{
+                border: 2px solid #FFD700;
+                background: white;
+            }}
         }}
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes:wght@400&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1>🎉 Valérie's 50th Birthday Memory Book 🎂</h1>
+        <h1>Valérie's 50th Birthday Memory Book</h1>
         <p class="subtitle">A collection of memories from your special celebration</p>
         
-        <div class="stats">
-            <p><span class="emoji">📸</span> <strong>{len(media_uploads)}</strong> photos & videos shared</p>
-            <p><span class="emoji">🎵</span> <strong>{len(music_uploads)}</strong> songs added to the party</p>
-            <p><span class="emoji">👥</span> <strong>{len(set(upload['guest_name'] for upload in uploads if upload['guest_name']))}</strong> wonderful contributors</p>
-        </div>
+        <h2>Submissions</h2>
         
-        <h2>💖 Memories & Messages</h2>'''
+        <div class="submissions-table">
+            <div class="table-header">
+                <div class="col-time">Time</div>
+                <div class="col-person">Person</div>
+                <div class="col-photo">Photo</div>
+                <div class="col-song">Song</div>
+                <div class="col-message">Message</div>
+            </div>'''
         
-        for upload in media_uploads:
+        # Combine all uploads and sort by timestamp
+        all_uploads = list(uploads)
+        all_uploads.sort(key=lambda x: x['timestamp'])
+        
+        for upload in all_uploads:
             guest_name = upload['guest_name'] or 'Anonymous'
-            birthday_note = upload['birthday_note']
+            birthday_note = upload['birthday_note'] or ''
             filename = upload['original_filename'] or 'Unknown file'
             timestamp = upload['timestamp']
+            file_type = upload['file_type']
+            file_path = upload['file_path']
+            
+            # Format timestamp to be more readable
+            try:
+                from datetime import datetime
+                dt = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+                formatted_time = dt.strftime('%m/%d %H:%M')
+            except:
+                formatted_time = timestamp[:16]
             
             html += f'''
-        <div class="memory-item">
-            <div class="contributor">💝 From {guest_name}</div>
-            <div class="filename">📁 {filename}</div>'''
+            <div class="table-row">
+                <div class="col-time">{formatted_time}</div>
+                <div class="col-person">{guest_name}</div>
+                <div class="col-photo">'''
             
-            if birthday_note and birthday_note.strip():
-                html += f'''
-            <div class="birthday-note">"{birthday_note}"</div>'''
+            if file_type in ('photo', 'video'):
+                # Use the actual stored file path
+                stored_filename = os.path.basename(file_path)
+                media_url = f"/media/{file_type}s/{stored_filename}"
+                short_filename = filename[:15] + '...' if len(filename) > 15 else filename
+                if file_type == 'photo':
+                    html += f'''<div class="photo-card">
+                        <img src="{media_url}" class="thumbnail" alt="Photo">
+                        <div class="photo-filename">{short_filename}</div>
+                    </div>'''
+                else:
+                    html += f'''<div class="photo-card">
+                        <video class="thumbnail" muted><source src="{media_url}"></video>
+                        <div class="photo-filename">{short_filename}</div>
+                    </div>'''
+            else:
+                html += '-'
             
-            html += f'''
-            <div style="color: #999; font-size: 0.8em;">⏰ {timestamp}</div>
-        </div>'''
-        
-        if music_uploads:
-            html += '''
-        <div class="music-section">
-            <h2>🎵 Party Soundtrack</h2>'''
+            html += '</div><div class="col-song">'
             
-            for upload in music_uploads:
-                guest_name = upload['guest_name'] or 'Anonymous'
-                filename = upload['original_filename'] or 'Unknown song'
+            if file_type == 'music':
+                music_url = f"/media/music/{filename}"
+                html += f'<a href="{music_url}" class="song-link" download>{filename}</a>'
+            else:
+                html += '-'
                 
-                html += f'''
-            <div class="memory-item">
-                <div class="contributor">🎼 Added by {guest_name}</div>
-                <div class="filename">🎵 {filename}</div>
+            html += f'''</div>
+                <div class="col-message">{birthday_note}</div>
             </div>'''
-            
-            html += '</div>'
         
         html += '''
-        <div style="text-align: center; margin-top: 40px; color: #666;">
-            <p>💕 Generated with love for Valérie's 50th Birthday celebration</p>
-            <p style="font-size: 0.9em;">🎂 What a wonderful party it was! 🎉</p>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Generated for Valérie's 50th Birthday celebration</strong></p>
+            <p style="font-size: 0.85em; margin-top: 10px;">Generated on {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
         </div>
     </div>
 </body>

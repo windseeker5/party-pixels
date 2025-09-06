@@ -3,36 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <title>Share Your Memory - Valérie's 50th Birthday</title>
+    <title>Share at Valérie's Party</title>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <meta name="theme-color" content="#FFD700">
     <meta name="mobile-web-app-capable" content="yes">
 </head>
 <body class="upload-page">
-    <!-- HERO SECTION -->
-    <div class="hero-section">
-        <div class="celebration-icon">🎉</div>
-        <h1 class="hero-title">
-            Made with ❤️ for Valérie
+    <!-- CELEBRATION TITLE (smaller for mobile) -->
+    <div class="celebration-header mobile">
+        <h1 class="celebration-title mobile">
+            ✨ Happy 50th Birthday Valérie! ✨
         </h1>
-        <p class="hero-subtitle">
-            Share your memories for her special 50th birthday
-        </p>
-        <div class="sparkle-decoration">
-            <span class="sparkle">✨</span>
-            <span class="sparkle">💝</span>
-            <span class="sparkle">✨</span>
-        </div>
     </div>
 
     <div class="upload-container">
-        <!-- UNIFIED UPLOAD AREA -->
+        <!-- UPLOAD AREA -->
         <div class="upload-area" id="uploadArea">
             <div class="upload-prompt" id="uploadPrompt">
-                <div class="upload-icon">📎</div>
-                <h2>Drop your memories here!</h2>
-                <p>Photos, videos, or music - tap to select files</p>
+                <div class="upload-icon">📸</div>
+                <h2>Drop photos or videos here!</h2>
+                <p>Or tap to select files</p>
                 <div class="file-types">
                     <span class="file-type">📷 Photos</span>
                     <span class="file-type">🎥 Videos</span>
@@ -59,22 +50,13 @@
 
         <!-- GUEST INFO FORM -->
         <form id="uploadForm" class="upload-form">
-            <div class="form-group signature-group">
-                <label for="guestName" class="signature-label">
-                    <span class="label-icon">✍️</span>
-                    Sign your memory
+            <div class="form-group">
+                <label for="guestName">
+                    <span class="label-icon">👤</span>
+                    Your name (optional):
                 </label>
-                <input type="text" id="guestName" name="guestName" placeholder="Your name (optional)" maxlength="50">
-                <div class="input-hint">Let Valérie know who shared this special moment</div>
-            </div>
-
-            <div class="form-group signature-group">
-                <label for="birthdayNote" class="signature-label">
-                    <span class="label-icon">💝</span>
-                    Birthday message
-                </label>
-                <textarea id="birthdayNote" name="birthdayNote" placeholder="Add a birthday message for Valérie... 💝" maxlength="200" rows="3"></textarea>
-                <div class="input-hint">Share your wishes and memories</div>
+                <input type="text" id="guestName" name="guestName" placeholder="Enter your name" maxlength="50">
+                <div class="input-hint">Help us attribute your memories!</div>
             </div>
 
 
@@ -127,32 +109,48 @@
                 </div>
             </div>
 
+            <!-- MODEL SELECTION SECTION -->
+            <div class="model-selection-section" id="modelSelectionSection" style="display: none;">
+                <div class="section-divider">
+                    <span class="divider-text">🤖 AI Model Settings 🤖</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="modelSelect">
+                        <span class="label-icon">⚙️</span>
+                        AI Model for Music Search:
+                    </label>
+                    <select id="modelSelect" class="model-selector">
+                        <option value="">Loading models...</option>
+                    </select>
+                    <div class="model-info" id="modelInfo">
+                        <span class="model-status">🔄 Checking model availability...</span>
+                    </div>
+                </div>
+            </div>
 
             <button type="submit" class="share-button" id="shareButton" disabled>
-                <span class="button-icon">💝</span>
-                <span class="button-text">Share Memory</span>
-                <div class="button-sparkle"></div>
+                <span class="button-icon">🎉</span>
+                <span class="button-text">Select files first</span>
             </button>
         </form>
 
         <!-- SUCCESS MESSAGE -->
-        <div class="success-message modern-success" id="successMessage" style="display: none;">
+        <div class="success-message" id="successMessage" style="display: none;">
             <div class="success-animation">
-                <div class="success-icon-large">💝</div>
-                <div class="confetti-burst">
-                    <span class="confetti">🎊</span>
-                    <span class="confetti">✨</span>
-                    <span class="confetti">🎉</span>
-                    <span class="confetti">💖</span>
-                    <span class="confetti">🎈</span>
-                    <span class="confetti">⭐</span>
+                <div class="success-icon">✅</div>
+                <div class="celebration-emojis">
+                    <span>🎉</span>
+                    <span>🎊</span>
+                    <span>✨</span>
+                    <span>🎈</span>
                 </div>
             </div>
-            <h3 class="success-title">Memory Added! 💕</h3>
-            <p id="successDetails" class="success-description">Your special moment is now part of Valérie's birthday collection!</p>
+            <h3>Shared Successfully!</h3>
+            <p id="successDetails">Your memory will appear on the big screen soon!</p>
             <div class="success-actions">
-                <button onclick="resetForm()" class="action-button primary">Add Another Memory</button>
-                <button onclick="viewSlideshow()" class="action-button secondary">View Collection</button>
+                <button onclick="resetForm()" class="reset-button">Share Another</button>
+                <button onclick="viewSlideshow()" class="view-button">View Slideshow</button>
             </div>
         </div>
 
